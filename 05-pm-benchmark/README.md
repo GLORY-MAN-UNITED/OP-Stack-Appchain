@@ -2,6 +2,8 @@
 
 Coordinate delivery, clean benchmark data, and write the final report.
 
+This folder is the direct work area for planning, analysis, and report materials.
+
 ## Responsibilities
 
 - Align frontend and backend interfaces

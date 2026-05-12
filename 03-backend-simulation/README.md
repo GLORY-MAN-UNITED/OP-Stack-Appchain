@@ -2,6 +2,8 @@
 
 Generate high-concurrency traffic and collect performance data such as TPS, latency, and gas usage.
 
+This folder is the direct work area for load tests, data collection, and benchmark outputs.
+
 ## Responsibilities
 
 - Write load-testing scripts

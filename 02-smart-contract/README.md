@@ -2,6 +2,8 @@
 
 Build the on-chain payment logic with a focus on safety and simplicity.
 
+This folder is the direct work area for contracts, tests, and deployment scripts.
+
 ## Responsibilities
 
 - Implement a mock ERC-20 for test funds

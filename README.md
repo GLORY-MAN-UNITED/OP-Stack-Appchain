@@ -8,4 +8,4 @@ The repository is split into five independent work folders.
 - [04-frontend](./04-frontend/README.md)
 - [05-pm-benchmark](./05-pm-benchmark/README.md)
 
-Each folder includes its own `workspace/` directory for code.
+Each folder is its own work area.

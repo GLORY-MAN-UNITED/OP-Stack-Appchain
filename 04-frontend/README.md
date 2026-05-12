@@ -2,6 +2,8 @@
 
 Build the wallet connection, transfer UI, and on-chain data views.
 
+This folder is the direct work area for the payment UI and wallet integration.
+
 ## Responsibilities
 
 - Create wallet connection screens
