@@ -2,32 +2,29 @@
 
 ## Must Have
 
-- A laptop or desktop with Docker installed
+- `Docker Desktop` with the Linux engine running
 - `git`
 - A Sepolia RPC URL
 - A Sepolia beacon URL
 - A wallet private key with Sepolia ETH
-- The matching admin/public address for that wallet
-- Enough disk space for OP Stack data and logs
+- The matching wallet address
+- Enough disk space for Docker images and chain data
 
 ## Recommended
 
-- WSL2 or a Linux machine
-- Docker Compose
-- `node` if you want to run helper scripts
-- `go` if you want to build OP Stack components from source
+- `node`
+- `go`
+- Stable internet for pulling Docker images and downloading `op-deployer`
 
 ## Optional For Later
 
+- Separate private keys for batcher and proposer
 - A public server
-- Public IP
-- Extra RPC provider
-- Separate batcher/proposer accounts
+- A second RPC provider for redundancy
 
 ## Not Needed For MVP
 
 - Mainnet funds
-- Cross-chain bridge work
 - Alt-DA
-- Multi-server deployment
-- Custom sequencer cluster
+- A public sequencer IP
+- Multi-node P2P setup

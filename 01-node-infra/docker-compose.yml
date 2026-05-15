@@ -1,0 +1,115 @@
+services:
+  op-geth:
+    image: ${OP_GETH_IMAGE}
+    container_name: op-geth
+    restart: unless-stopped
+    volumes:
+      - ./sequencer:/workspace
+    working_dir: /workspace
+    ports:
+      - "${RPC_PORT}:8545"
+      - "${WS_PORT}:8546"
+      - "${AUTHRPC_PORT}:8551"
+    command:
+      - "--datadir=/workspace/op-geth-data"
+      - "--http"
+      - "--http.addr=0.0.0.0"
+      - "--http.port=8545"
+      - "--ws"
+      - "--ws.addr=0.0.0.0"
+      - "--ws.port=8546"
+      - "--authrpc.addr=0.0.0.0"
+      - "--authrpc.port=8551"
+      - "--authrpc.jwtsecret=/workspace/jwt.txt"
+      - "--state.scheme=hash"
+      - "--syncmode=full"
+      - "--gcmode=archive"
+      - "--rollup.disabletxpoolgossip=true"
+      - "--http.vhosts=*"
+      - "--http.corsdomain=*"
+      - "--http.api=eth,net,web3,debug,txpool,admin"
+      - "--ws.origins=*"
+      - "--ws.api=eth,net,web3,debug,txpool,admin"
+      - "--authrpc.vhosts=*"
+    networks:
+      - op-stack
+
+  op-node:
+    image: ${OP_NODE_IMAGE}
+    container_name: op-node
+    restart: unless-stopped
+    depends_on:
+      - op-geth
+    volumes:
+      - ./sequencer:/workspace
+    working_dir: /workspace
+    ports:
+      - "${ROLLUP_RPC_PORT}:8547"
+    command:
+      - "op-node"
+      - "--l1=${L1_RPC_URL}"
+      - "--l1.beacon=${L1_BEACON_URL}"
+      - "--l2=http://op-geth:8551"
+      - "--l2.jwt-secret=/workspace/jwt.txt"
+      - "--rollup.config=/workspace/rollup.json"
+      - "--sequencer.enabled=true"
+      - "--sequencer.stopped=false"
+      - "--sequencer.max-safe-lag=3600"
+      - "--verifier.l1-confs=4"
+      - "--p2p.disable=true"
+      - "--p2p.sequencer.key=${PRIVATE_KEY}"
+      - "--rpc.addr=0.0.0.0"
+      - "--rpc.port=8547"
+      - "--rpc.enable-admin"
+      - "--log.level=info"
+      - "--log.format=json"
+    networks:
+      - op-stack
+
+  op-batcher:
+    image: ${OP_BATCHER_IMAGE}
+    container_name: op-batcher
+    restart: unless-stopped
+    depends_on:
+      - op-node
+    volumes:
+      - ./batcher:/workspace
+    working_dir: /workspace
+    ports:
+      - "${BATCHER_RPC_PORT}:8548"
+    env_file:
+      - ./batcher/.env.generated
+    command: >
+      op-batcher
+      --rpc.addr=0.0.0.0
+      --rpc.enable-admin
+      --resubmission-timeout=30s
+      --log.level=info
+      --log.format=json
+    networks:
+      - op-stack
+
+  op-proposer:
+    image: ${OP_PROPOSER_IMAGE}
+    container_name: op-proposer
+    restart: unless-stopped
+    depends_on:
+      - op-node
+    volumes:
+      - ./proposer:/workspace
+    working_dir: /workspace
+    ports:
+      - "${PROPOSER_RPC_PORT}:8560"
+    env_file:
+      - ./proposer/.env.generated
+    command: >
+      op-proposer
+      --rpc.port=8560
+      --log.level=info
+      --log.format=json
+    networks:
+      - op-stack
+
+networks:
+  op-stack:
+    name: op-stack
